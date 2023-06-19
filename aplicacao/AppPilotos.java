@@ -3,6 +3,7 @@ package aplicacao;
 import java.io.IOException;
 import java.util.Scanner;
 
+import classes.Aeronave;
 import classes.Piloto;
 
 public class AppPilotos {
@@ -12,12 +13,10 @@ public class AppPilotos {
         int opcao, qtdCadastrados = 0;
         Piloto[] pilotos = new Piloto[MAX_ELEMENTOS];
 
-        // List<Piloto> pilotos = new ArrayList<Piloto>();
-
         Scanner in = new Scanner(System.in);
 
         do {
-            System.out.println("\n****\nMENU\n****\n");
+            System.out.println("\n**\nMENU\n**\n");
             System.out.println("1 - Cadastrar piloto");
             System.out.println("2 - Listar pilotos cadastrados");
             System.out.println("3 - Localizar piloto pelo BREVE");
@@ -42,16 +41,16 @@ public class AppPilotos {
                 System.out.println("Insira o cpf: ");
                 String cpf = in.nextLine();
                 while (!cpf.matches("\\d{3}[.]{1}\\d{3}[.]{1}\\d{3}[-]{1}\\d{2}")) {
-                    System.out.println("CPF invalido");
-                    System.out.println("Insira um cpf válido: ");
+                    System.out.println("CPF inválido");
+                    System.out.println("Insira um CPF válido: ");
                     cpf = in.nextLine();
                 }
-                System.out.println("Insira seu brevê: ");
+                System.out.println("Insira o brevê: ");
                 String breve = in.nextLine();
 
                 Piloto piloto = new Piloto(nome, cpf, breve);
                 pilotos[qtdCadastrados] = piloto;
-                qtdCadastrados = qtdCadastrados + 1;
+                qtdCadastrados++;
 
                 System.out.println("\nPiloto cadastrado com sucesso.");
                 voltarMenu(in);
@@ -64,58 +63,84 @@ public class AppPilotos {
                 }
 
                 // Exiba os pilotos aqui
-                System.out.println("*** Pilotos cadrastados ***");
-                for (Piloto piloto : pilotos) {
-                    if (piloto != null) {
-                        System.out.println("Nome: " + piloto.getNome());
-                        System.out.println("CPF: " + piloto.getCpf());
-                        System.out.println("Brevê: " + piloto.getBreve());
-                        System.out.println("------------");
-                    }
+                System.out.println("* Pilotos cadastrados *");
+                for (int i = 0; i < qtdCadastrados; i++) {
+                    System.out.println("Nome: " + pilotos[i].getNome());
+                    System.out.println("CPF: " + pilotos[i].getCpf());
+                    System.out.println("Brevê: " + pilotos[i].getBreve());
+                    System.out.println("------------");
                 }
 
                 voltarMenu(in);
             } else if (opcao == 3) {
                 boolean key = false;
                 Piloto pilotoEncontrado = null;
-                System.out.print("\nInforme o Brevê: ");
+                System.out.print("\nInforme o brevê: ");
                 String breve = in.nextLine();
 
                 for (int i = 0; !key && i < qtdCadastrados; i++) {
                     key = breve.equals(pilotos[i].getBreve());
-                    if(key){
-                    pilotoEncontrado = pilotos[i];
+                    if (key) {
+                        pilotoEncontrado = pilotos[i];
                     }
                 }
 
                 if (key) {
-                    System.out.printf("BREVÊ: " + pilotoEncontrado.getBreve() + " cadastrado.");
-                } else if (pilotoEncontrado == null) {
+                    System.out.println("Brevê: " + pilotoEncontrado.getBreve() + " cadastrado.");
+                } else {
                     System.out.println("Piloto não cadastrado.");
                 }
 
-                
                 voltarMenu(in);
             } else if (opcao == 4) {
                 // Se não tem ninguém cadastrado no vetor, caio fora
                 if (qtdCadastrados == 0) {
-                    System.out.println("\nSem pilotos, não há como cadastrar uma aeronave");
+                    System.out.println("\nSem pilotos, não é possível cadastrar uma aeronave.");
                     voltarMenu(in);
                     continue;
                 }
 
                 // Solicite ao usuário o piloto
-                // Crie a aeronave vinculando-a ao piloto
-                
-                System.out.println("\nAeronave cadastrada com sucesso.");
-                // Exiba os dados da aeronave
-                voltarMenu(in);
-            } else if (opcao != 0) {
-                System.out.println("\nOpção inválida!");
-            }
-        } while (opcao != 0);
+                System.out.println("Insira o brevê do piloto: ");
+                String breve = in.nextLine();
 
-        System.out.println("Fim do programa!");
+                Piloto piloto = null;
+                for (int i = 0; i < qtdCadastrados; i++) {
+                    if (breve.equals(pilotos[i].getBreve())) {
+                        piloto = pilotos[i];
+                        break;
+                    }
+                }
+
+                if (piloto != null) {
+                    System.out.println("Insira o modelo da Aeronave: ");
+                    String modelo = in.nextLine();
+                    System.out.println("Insira o número de série da Aeronave: ");
+                    String numSerie = in.nextLine();
+
+                    Aeronave aeronave = new Aeronave(modelo, numSerie, MAX_ELEMENTOS);
+                    aeronave.adicionarPiloto(piloto);
+
+                    System.out.println("\nAeronave cadastrada com sucesso.");
+                    System.out.println("Piloto vinculado à aeronave:");
+                    System.out.println("Nome: " + piloto.getNome());
+                    System.out.println("CPF: " + piloto.getCpf());
+                    System.out.println("Brevê: " + piloto.getBreve());
+                    System.out.println("Aeronave - Modelo: " + aeronave.getModelo() + " Número de Série: "
+                            + aeronave.getNumeroSerie());
+                } else {
+                    System.out.println("Piloto não encontrado.");
+                }
+
+                voltarMenu(in);
+            } else if (opcao == 0) {
+                System.out.println("\nSaindo...");
+            } else {
+                System.out.println("\nOpção inválida!");
+                voltarMenu(in);
+            }
+
+        } while (opcao != 0);
 
         in.close();
     }
