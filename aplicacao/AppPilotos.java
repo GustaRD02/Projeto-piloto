@@ -78,16 +78,18 @@ public class AppPilotos {
             } else if (opcao == 3) {
                 boolean key = false;
                 Piloto pilotoEncontrado = null;
-                System.out.print("\nInforme o Breve: ");
+                System.out.print("\nInforme o Brevê: ");
                 String breve = in.nextLine();
 
-                for (int i = 0; !key && i <= pilotos.length; i++) {
+                for (int i = 0; !key && i < qtdCadastrados; i++) {
                     key = breve.equals(pilotos[i].getBreve());
+                    if(key){
                     pilotoEncontrado = pilotos[i];
+                    }
                 }
 
                 if (key) {
-                    System.out.printf("BREVE: " + pilotoEncontrado.getBreve() + " cadastrado.");
+                    System.out.printf("BREVÊ: " + pilotoEncontrado.getBreve() + " cadastrado.");
                 } else if (pilotoEncontrado == null) {
                     System.out.println("Piloto não cadastrado.");
                 }
@@ -104,6 +106,7 @@ public class AppPilotos {
 
                 // Solicite ao usuário o piloto
                 // Crie a aeronave vinculando-a ao piloto
+                
                 System.out.println("\nAeronave cadastrada com sucesso.");
                 // Exiba os dados da aeronave
                 voltarMenu(in);
